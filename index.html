@@ -33,5 +33,17 @@ t.AF.id=t.AF.id||i,t.AF.plugins={},o=e.createElement(n),p=e.getElementsByTagName
 o.src="https://websdk.appsflyer.com?"+(c.length>0?"st="+c.split(",").sort().join(",")+"&":"")+(i.length>0?"af_id="+i:""),
 p.parentNode.insertBefore(o,p)}(window,document,"script",0,"AF","pba","6e4488d1-f73e-44b4-b987-849d7ecb629e")
 </script>
+
+<p>Click the button below to trigger an event</p>
+<p id="placeholder"></p>
+<button onclick="myFunction()">Click to Triger Event</button>       
+
+<script>
+function myFunction()
+{
+        document.getElementById("placeholder").innerHTML = 'Event Sent';
+     AF.event({action: 'baaber_event'})
+}
+</script>
   
 </html>
