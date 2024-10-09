@@ -33,6 +33,14 @@
             white-space: pre-wrap;
             overflow-y: auto;
         }
+        .heading {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .dotted-line {
+            border-bottom: 1px dotted #000;
+            margin-bottom: 10px;
+        }
     </style>
 
     <script>
@@ -55,6 +63,22 @@
             document.getElementById('li_fat_id').value = li_fat_id;
         }
 
+        function displayDataLayer() {
+            const dataLayerEvent = {
+                event: "CAPI Page View",
+                dataLayer: window.dataLayer
+            };
+
+            // Display pretty JSON in the consoleOutput div
+            const formattedData = JSON.stringify(dataLayerEvent, null, 2);
+
+            document.getElementById('consoleOutput').innerHTML = `
+                <div class="heading">DataLayer - CAPI Page View</div>
+                <div class="dotted-line"></div>
+                <pre>${formattedData}</pre>
+            `;
+        }
+
         function submitHandler(event) {
             event.preventDefault();
             let formData = '';
@@ -74,9 +98,10 @@
             document.getElementById('consoleOutput').textContent = formData;
         }
 
-        window.onload = async function() {
+        window.onload = function() {
             setLiFatId();
-            await updateHashedEmail();
+            updateHashedEmail();
+            displayDataLayer(); // Display DataLayer with CAPI Page View on page load
         };
     </script>
 </head>
@@ -132,6 +157,8 @@
         <input type="reset" value="Reset">
 
         <div id="consoleOutput"></div>
+        <button type="button" onclick="clearConsoleOutput()">Clear Console Output</button>
+
     </form>
 </body>
 </html>
