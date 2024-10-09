@@ -23,23 +23,9 @@
     <title>Form Demo</title>
 
     <style>
-        #consoleOutput {
-            width: 100%;
-            height: 200px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-            padding: 10px;
-            font-family: monospace;
-            white-space: pre-wrap;
-            overflow-y: auto;
-        }
-        .heading {
+        .bold-underline {
             font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .dotted-line {
-            border-bottom: 1px dotted #000;
-            margin-bottom: 10px;
+            text-decoration: underline;
         }
     </style>
 
@@ -63,45 +49,9 @@
             document.getElementById('li_fat_id').value = li_fat_id;
         }
 
-        function displayDataLayer() {
-            const dataLayerEvent = {
-                event: "CAPI Page View",
-                dataLayer: window.dataLayer
-            };
-
-            // Display pretty JSON in the consoleOutput div
-            const formattedData = JSON.stringify(dataLayerEvent, null, 2);
-
-            document.getElementById('consoleOutput').innerHTML = `
-                <div class="heading">DataLayer - CAPI Page View</div>
-                <div class="dotted-line"></div>
-                <pre>${formattedData}</pre>
-            `;
-        }
-
-        function submitHandler(event) {
-            event.preventDefault();
-            let formData = '';
-            const elements = event.target.elements;
-            for (let i = 0; i < elements.length; i++) {
-                const element = elements[i];
-                if (element.name) {
-                    formData += `${element.name}: ${element.value}\n`;
-                }
-            }
-
-            // Log form data to the console
-            console.log("Form data submitted:");
-            console.log(formData);
-
-            // Display the form data in the consoleOutput div
-            document.getElementById('consoleOutput').textContent = formData;
-        }
-
         window.onload = function() {
             setLiFatId();
             updateHashedEmail();
-            displayDataLayer(); // Display DataLayer with CAPI Page View on page load
         };
     </script>
 </head>
@@ -113,7 +63,7 @@
     <!-- End Google Tag Manager (noscript) -->
 
     <h2>CAPI Demo Form</h2>
-    <form id="capiDemoForm" name="capiDemoForm" action="/submit" method="POST" onsubmit="submitHandler(event);" onreset="setLiFatId();" autocomplete="off">
+    <form id="capiDemoForm" name="capiDemoForm" action="/submit" method="POST" onreset="setLiFatId();" autocomplete="off">
         <label for="li_fat_id"><strong>li_fat_id:</strong></label>
         <input type="text" id="li_fat_id" name="li_fat_id" readonly autocomplete="off"><br><br>
 
@@ -155,10 +105,6 @@
         
         <input type="submit" value="Submit">
         <input type="reset" value="Reset">
-
-        <div id="consoleOutput"></div>
-        <button type="button" onclick="clearConsoleOutput()">Clear Console Output</button>
-
     </form>
 </body>
 </html>
