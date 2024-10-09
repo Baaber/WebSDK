@@ -7,9 +7,9 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-    
       gtag('config', 'G-0FKG7GCFY0');
     </script>
+
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -17,10 +17,11 @@
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-MM6N3HBJ');</script>
     <!-- End Google Tag Manager -->
-  
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Demo</title>
+
     <style>
         #consoleOutput {
             width: 100%;
@@ -33,6 +34,7 @@
             overflow-y: auto;
         }
     </style>
+
     <script>
         async function hashEmail(email) {
             const encoder = new TextEncoder();
@@ -63,6 +65,12 @@
                     formData += `${element.name}: ${element.value}\n`;
                 }
             }
+
+            // Log form data to the console
+            console.log("Form data submitted:");
+            console.log(formData);
+
+            // Display the form data in the consoleOutput div
             document.getElementById('consoleOutput').textContent = formData;
         }
 
@@ -72,12 +80,13 @@
         };
     </script>
 </head>
+
 <body>
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MM6N3HBJ"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
-  
+
     <h2>CAPI Demo Form</h2>
     <form action="/submit" method="POST" onsubmit="submitHandler(event);" onreset="setLiFatId();" autocomplete="off">
         <label for="li_fat_id"><strong>li_fat_id:</strong></label>
