@@ -27,6 +27,12 @@
             font-weight: bold;
             text-decoration: underline;
         }
+        #message {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: green;
+        }
     </style>
 
     <script>
@@ -49,6 +55,11 @@
             document.getElementById('li_fat_id').value = li_fat_id;
         }
 
+        function submitHandler(event) {
+            event.preventDefault();
+            document.getElementById('message').textContent = "Your Signup information has been submitted.";
+        }
+
         window.onload = function() {
             setLiFatId();
             updateHashedEmail();
@@ -63,7 +74,7 @@
     <!-- End Google Tag Manager (noscript) -->
 
     <h2>CAPI Demo Form</h2>
-    <form id="capiDemoForm" name="capiDemoForm" action="/submit" method="POST" onreset="setLiFatId();" autocomplete="off">
+    <form id="capiDemoForm" name="capiDemoForm" action="/submit" method="POST" onsubmit="submitHandler(event);" onreset="setLiFatId();" autocomplete="off">
         <label for="li_fat_id"><strong>li_fat_id:</strong></label>
         <input type="text" id="li_fat_id" name="li_fat_id" readonly autocomplete="off"><br><br>
 
@@ -106,5 +117,8 @@
         <input type="submit" value="Submit">
         <input type="reset" value="Reset">
     </form>
+
+    <div id="message"></div>
+
 </body>
 </html>
