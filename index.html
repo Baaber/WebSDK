@@ -67,43 +67,43 @@
     <h2>CAPI Demo Form</h2>
     <form id="capiDemoForm" name="capiDemoForm" action="/submit" method="POST" onsubmit="submitHandler(event);" onreset="setLiFatId();" autocomplete="off">
         <label for="li_fat_id"><strong>li_fat_id:</strong></label>
-        <input type="text" id="li_fat_id" name="li_fat_id" readonly autocomplete="off"><br><br>
+        <input type="text" id="li_fat_id" name="li_fat_id" autocomplete="off"><br><br>
 
         <label for="first_name"><strong>First Name:</strong></label>
-        <input type="text" id="first_name" name="first_name" value="John" required autocomplete="off"><br><br>
+        <input type="text" id="first_name" name="first_name" value="John" autocomplete="off"><br><br>
         
         <label for="last_name"><strong>Last Name:</strong></label>
-        <input type="text" id="last_name" name="last_name" value="Doe" required autocomplete="off"><br><br>
+        <input type="text" id="last_name" name="last_name" value="Doe" autocomplete="off"><br><br>
         
         <label for="email"><strong>Email:</strong></label>
-        <input type="email" id="email" name="email" value="example@email.com" required oninput="updateHashedEmail()" autocomplete="off"><br><br>
+        <input type="email" id="email" name="email" value="example@email.com" oninput="updateHashedEmail()" autocomplete="off"><br><br>
         
         <label for="hashed_email"><strong>Hashed Email (SHA-256):</strong></label>
         <input type="text" id="hashed_email" name="hashed_email" readonly size="64" autocomplete="off"><br><br>
 
         <label for="job_title"><strong>Job Title:</strong></label>
-        <input type="text" id="job_title" name="job_title" value="Software Engineer" required autocomplete="off"><br><br>
+        <input type="text" id="job_title" name="job_title" value="Software Engineer" autocomplete="off"><br><br>
 
         <label for="company"><strong>Company:</strong></label>
-        <input type="text" id="company" name="company" value="Example Corp" required autocomplete="off"><br><br>
+        <input type="text" id="company" name="company" value="Example Corp" autocomplete="off"><br><br>
 
         <label for="country_code"><strong>Country Code:</strong></label>
-        <input type="text" id="country_code" name="country_code" value="US" required autocomplete="off"><br><br>
+        <input type="text" id="country_code" name="country_code" value="US" autocomplete="off"><br><br>
 
         <label for="currency"><strong>Currency:</strong></label>
-        <input type="text" id="currency" name="currency" value="USD" required autocomplete="off"><br><br>
+        <input type="text" id="currency" name="currency" value="USD" autocomplete="off"><br><br>
 
         <label for="value"><strong>Value:</strong></label>
-        <input type="number" id="value" name="value" value="100.0" required autocomplete="off"><br><br>
+        <input type="number" id="value" name="value" value="100.0" autocomplete="off"><br><br>
 
         <label for="acxiom_id"><strong>Acxiom ID:</strong></label>
-        <input type="text" id="acxiom_id" name="acxiom_id" value="AX123456" required autocomplete="off"><br><br>
+        <input type="text" id="acxiom_id" name="acxiom_id" value="AX123456" autocomplete="off"><br><br>
 
         <label for="oracle_moat_id"><strong>Oracle Moat ID:</strong></label>
-        <input type="text" id="oracle_moat_id" name="oracle_moat_id" value="MOAT98765" required autocomplete="off"><br><br>
+        <input type="text" id="oracle_moat_id" name="oracle_moat_id" value="MOAT98765" autocomplete="off"><br><br>
 
         <label for="phone"><strong>Phone Number:</strong></label>
-        <input type="tel" id="phone" name="phone" value="1234567890" required autocomplete="off"><br><br>
+        <input type="tel" id="phone" name="phone" value="1234567890" autocomplete="off"><br><br>
         
         <input type="submit" value="Submit">
         <input type="reset" value="Reset">
