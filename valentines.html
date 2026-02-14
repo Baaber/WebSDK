@@ -46,7 +46,7 @@
       border-radius:999px;
       background:#ffffffb3;
       border:1px solid #ffffffcc;
-      font-weight:800;
+      font-weight:900;
       font-size:13px;
       box-shadow: 0 10px 22px var(--shadow);
     }
@@ -67,13 +67,25 @@
       box-shadow: 0 12px 30px var(--shadow);
     }
 
+    .playArea{
+      margin-top: 10px;
+      padding: 18px 14px;
+      border-radius: 18px;
+      border: 2px dashed #ff8fab;
+      background: #ffffff85;
+      position: relative;
+      overflow: hidden; /* keep No inside the border */
+    }
+
     .actions{
       display:flex;
       gap:14px;
       justify-content:center;
+      align-items:center;
       flex-wrap:wrap;
-      margin-top: 16px;
+      margin-top: 8px;
       position: relative;
+      min-height: 92px;
     }
 
     button{
@@ -83,12 +95,15 @@
       border-radius: 14px;
       font-weight: 900;
       font-size: 16px;
-      transition: transform 160ms ease, filter 160ms ease, left 140ms ease, top 140ms ease;
+      transition: transform 140ms ease, filter 140ms ease, left 160ms ease, top 160ms ease;
       box-shadow: 0 12px 30px var(--shadow);
       color:white;
       min-width: 150px;
       touch-action: manipulation;
       user-select:none;
+      position: relative;
+      z-index: 1;
+      will-change: transform, left, top;
     }
     button:hover{ filter: brightness(1.02); }
     button:active{ transform: translateY(1px) scale(0.99); }
@@ -96,11 +111,14 @@
     .yes{ background: var(--yes); }
     .no{
       background: var(--no);
-      position: relative; /* will switch to absolute once it starts dodging */
+      position:absolute; /* so it can move around */
+      left: 50%;
+      top: 18px;
+      transform: translateX(0) scale(1);
     }
 
     .hint{
-      margin-top:14px;
+      margin-top:12px;
       font-size:13px;
       opacity:0.78;
       min-height: 18px;
@@ -128,7 +146,6 @@
   <canvas id="confetti"></canvas>
 
   <div class="card">
-    <!-- Asking view -->
     <div id="askView">
       <div class="badge">💌 for Ayesha</div>
 
@@ -143,15 +160,16 @@
       <h1>Ayesha, I know it’s late but… will you be my Valentine? 💘</h1>
       <div class="sub">One tiny question, one huge yes.</div>
 
-      <div class="actions" id="actions">
-        <button class="yes" id="yesBtn">Yes 💖</button>
-        <button class="no" id="noBtn">No 🙈</button>
+      <div class="playArea" id="playArea">
+        <div class="actions" id="actions">
+          <button class="yes" id="yesBtn">Yes 💖</button>
+          <button class="no" id="noBtn">No 🙈</button>
+        </div>
       </div>
 
       <div class="hint" id="hint"></div>
     </div>
 
-    <!-- Success view -->
     <div class="success" id="successView">
       <div class="badge">💞 officially mine</div>
 
@@ -176,66 +194,90 @@
     const hint = document.getElementById("hint");
     const actions = document.getElementById("actions");
 
-    // Yes grows a little each time she tries to hit "No"
     let yesScale = 1;
-    const YES_MAX = 2.8;
+    let noScale = 1;
 
-    function growYes(){
-      yesScale = Math.min(YES_MAX, yesScale * 1.12);
-      yesBtn.style.transform = `scale(${yesScale})`;
-    }
+    const YES_MAX = 3.2;
+    const NO_MIN = 0.22;
+
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+    function rand(min, max){ return Math.random() * (max - min) + min; }
 
     function teaseText(){
       const lines = [
         "nice try 😌",
-        "that button is FAST 😂",
         "oops, it ran away 🙈",
-        "Ayesha you can’t catch it 😭",
-        "ok ok, just press Yes 💗"
+        "you almost got it 😂",
+        "ok ok, press Yes 💗",
+        "that No is getting shy 🥺"
       ];
       hint.textContent = lines[Math.floor(Math.random() * lines.length)];
     }
 
-    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+    function placeNoRandomly(){
+      const areaW = actions.clientWidth;
+      const areaH = actions.clientHeight;
 
-    // Move the No button somewhere else within the card, not off-screen
-    function dodgeNo(){
-      const card = document.querySelector(".card");
-      const cardRect = card.getBoundingClientRect();
-      const btnRect = noBtn.getBoundingClientRect();
+      const btnW = noBtn.offsetWidth * noScale;
+      const btnH = noBtn.offsetHeight * noScale;
 
-      // Make it absolute so it can roam inside the card
-      noBtn.style.position = "absolute";
+      const padding = 8;
+      const maxLeft = Math.max(padding, areaW - btnW - padding);
+      const maxTop = Math.max(padding, areaH - btnH - padding);
 
-      // Compute safe area inside the card
-      const padding = 16;
-      const maxLeft = cardRect.width - btnRect.width - padding;
-      const maxTop = cardRect.height - btnRect.height - padding;
+      const left = clamp(rand(padding, maxLeft), padding, maxLeft);
+      const top = clamp(rand(padding, maxTop), padding, maxTop);
 
-      // Random position, biased away from the Yes button area
-      const left = rand(padding, maxLeft);
-      const top = rand(Math.max(130, padding), maxTop); // keep it below the top gif area
-
-      noBtn.style.left = `${clamp(left, padding, maxLeft)}px`;
-      noBtn.style.top = `${clamp(top, Math.max(130, padding), maxTop)}px`;
-
-      // Give Yes a tiny boost for extra cuteness
-      growYes();
-      teaseText();
+      noBtn.style.left = `${left}px`;
+      noBtn.style.top = `${top}px`;
+      noBtn.style.transform = `scale(${noScale})`;
     }
 
-    // Random helper
-    function rand(min, max){ return Math.random() * (max - min) + min; }
+    function growYes(){
+      yesScale = Math.min(YES_MAX, yesScale * 1.14);
+      yesBtn.style.transform = `scale(${yesScale})`;
+    }
 
-    // Dodge on hover (mouse) and on touch/click attempts (mobile)
-    noBtn.addEventListener("mouseenter", dodgeNo);
+    function shrinkNo(){
+      noScale = Math.max(NO_MIN, noScale * 0.86);
+    }
+
+    function dodge(){
+      growYes();
+      shrinkNo();
+      placeNoRandomly();
+      teaseText();
+
+      if (noScale <= 0.28) {
+        hint.textContent = "the universe said: click Yes 💘";
+      }
+    }
+
+    // Dodge on hover and tap/click attempts
+    noBtn.addEventListener("mouseenter", dodge);
     noBtn.addEventListener("pointerdown", (e) => {
       e.preventDefault();
-      dodgeNo();
+      dodge();
     });
     noBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      dodgeNo();
+      dodge();
+    });
+
+    window.addEventListener("load", () => {
+      // Start with both visible and side-by-side visually,
+      // then place No near its original spot inside the actions area
+      noScale = 1;
+      yesScale = 1;
+      yesBtn.style.transform = "scale(1)";
+      // Place "No" roughly to the right of "Yes" initially
+      const yRect = yesBtn.getBoundingClientRect();
+      const aRect = actions.getBoundingClientRect();
+      const initialLeft = (yRect.right - aRect.left) + 14;
+      const initialTop = 8;
+      noBtn.style.left = `${clamp(initialLeft, 8, actions.clientWidth - noBtn.offsetWidth - 8)}px`;
+      noBtn.style.top = `${initialTop}px`;
+      noBtn.style.transform = "scale(1)";
     });
 
     yesBtn.addEventListener("click", () => {
