@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Will you be my Valentine?</title>
+  <style>
+    :root{
+      --bg1:#fff0f6;
+      --bg2:#ffe3ec;
+      --card:#ffffffcc;
+      --text:#2b2b2b;
+      --yes:#22c55e;
+      --no:#ef4444;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: radial-gradient(circle at top, var(--bg1), var(--bg2));
+      color:var(--text);
+      overflow:hidden;
+      padding:24px;
+    }
+    .card{
+      width:min(720px, 100%);
+      background:var(--card);
+      backdrop-filter: blur(10px);
+      border:1px solid #ffffff80;
+      border-radius:24px;
+      padding:28px 22px;
+      box-shadow: 0 20px 60px #00000012;
+      text-align:center;
+      position:relative;
+    }
+    h1{
+      margin:14px 0 8px;
+      font-size: clamp(22px, 3vw, 34px);
+      line-height:1.15;
+      letter-spacing:-0.02em;
+    }
+    .gif{
+      width:min(340px, 85%);
+      border-radius:18px;
+      box-shadow: 0 12px 30px #00000014;
+    }
+    .sub{
+      margin: 6px 0 18px;
+      opacity:0.8;
+      font-size: 14px;
+    }
+    .actions{
+      display:flex;
+      gap:14px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top: 14px;
+    }
+    button{
+      border:none;
+      cursor:pointer;
+      padding: 14px 18px;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 16px;
+      transition: transform 160ms ease, filter 160ms ease, width 160ms ease;
+      box-shadow: 0 12px 30px #00000012;
+      color:white;
+      min-width: 130px;
+    }
+    button:active{ transform: translateY(1px) scale(0.99); }
+    .yes{ background: var(--yes); }
+    .no{ background: var(--no); }
+
+    .hint{
+      margin-top:14px;
+      font-size:13px;
+      opacity:0.7;
+    }
+
+    /* Success view */
+    .success{
+      display:none;
+      animation: pop 240ms ease-out;
+    }
+    @keyframes pop{
+      from{ transform: scale(0.98); opacity:0; }
+      to{ transform: scale(1); opacity:1; }
+    }
+
+    /* Confetti canvas */
+    #confetti{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:999;
+      display:none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confetti"></canvas>
+
+  <div class="card" id="card">
+    <!-- Asking view -->
+    <div id="askView">
+      <img
+        class="gif"
+        alt="Valentine gif"
+        src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif"
+      />
+      <h1>I know its late but... will you be my valentines?</h1>
+      <div class="sub">Pick wisely 😌</div>
+
+      <div class="actions">
+        <button class="yes" id="yesBtn">Yes</button>
+        <button class="no" id="noBtn">No</button>
+      </div>
+
+      <div class="hint" id="hint"></div>
+    </div>
+
+    <!-- Success view -->
+    <div class="success" id="successView">
+      <img
+        class="gif"
+        alt="Happy dancing gif"
+        src="https://media.giphy.com/media/3o7aD2saalBwwftBIY/giphy.gif"
+      />
+      <h1>YAAAAAAY 💖</h1>
+      <div class="sub">Best decision of the day.</div>
+    </div>
+  </div>
+
+  <script>
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const askView = document.getElementById("askView");
+    const successView = document.getElementById("successView");
+    const hint = document.getElementById("hint");
+
+    // Button scaling state
+    let yesScale = 1;
+    let noScale = 1;
+
+    // Limits so it doesn't get ridiculous (but still funny)
+    const YES_MAX = 3.2;
+    const NO_MIN = 0.25;
+
+    function applyScales(){
+      yesBtn.style.transform = `scale(${yesScale})`;
+      noBtn.style.transform = `scale(${noScale})`;
+    }
+
+    function teaseText(){
+      const lines = [
+        "are you sure? 👀",
+        "wrong answer bestie 😭",
+        "pls rethink that 😌",
+        "ok now you’re just playing",
+        "last chance 😅"
+      ];
+      hint.textContent = lines[Math.floor(Math.random() * lines.length)];
+    }
+
+    noBtn.addEventListener("click", () => {
+      // Grow yes, shrink no
+      yesScale = Math.min(YES_MAX, yesScale * 1.18);
+      noScale = Math.max(NO_MIN, noScale * 0.82);
+      applyScales();
+      teaseText();
+
+      // If No gets super tiny, nudge user
+      if (noScale <= 0.3) {
+        hint.textContent = "the universe is telling you to click Yes 💘";
+      }
+    });
+
+    yesBtn.addEventListener("click", () => {
+      // Swap views
+      askView.style.display = "none";
+      successView.style.display = "block";
+
+      // Confetti!
+      startConfetti(2200);
+    });
+
+    // Lightweight confetti (no libraries)
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
+    let confettiPieces = [];
+    let confettiAnimating = false;
+
+    function resizeCanvas(){
+      canvas.width = window.innerWidth * devicePixelRatio;
+      canvas.height = window.innerHeight * devicePixelRatio;
+      ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    function rand(min, max){ return Math.random() * (max - min) + min; }
+
+    function makeConfetti(count=180){
+      const colors = ["#ff4d6d","#ff8fab","#ffd6e0","#c0fdfb","#7c3aed","#22c55e","#f59e0b"];
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      confettiPieces = Array.from({length: count}, () => ({
+        x: rand(0, w),
+        y: rand(-h, 0),
+        r: rand(3, 7),
+        vx: rand(-2, 2),
+        vy: rand(2.5, 6),
+        rot: rand(0, Math.PI),
+        vr: rand(-0.15, 0.15),
+        color: colors[Math.floor(Math.random() * colors.length)],
+        shape: Math.random() < 0.35 ? "rect" : "circle"
+      }));
+    }
+
+    function drawConfetti(){
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      for (const p of confettiPieces){
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.color;
+
+        if (p.shape === "rect") {
+          ctx.fillRect(-p.r, -p.r, p.r * 2.2, p.r * 1.4);
+        } else {
+          ctx.beginPath();
+          ctx.arc(0, 0, p.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+
+        // wrap
+        if (p.y > window.innerHeight + 20) {
+          p.y = -20;
+          p.x = rand(0, window.innerWidth);
+        }
+        if (p.x < -20) p.x = window.innerWidth + 20;
+        if (p.x > window.innerWidth + 20) p.x = -20;
+      }
+    }
+
+    function animateConfetti(){
+      if (!confettiAnimating) return;
+      drawConfetti();
+      requestAnimationFrame(animateConfetti);
+    }
+
+    function startConfetti(durationMs=2000){
+      canvas.style.display = "block";
+      confettiAnimating = true;
+      makeConfetti(220);
+      animateConfetti();
+
+      setTimeout(() => {
+        confettiAnimating = false;
+        canvas.style.display = "none";
+        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      }, durationMs);
+    }
+
+    // Initial scale apply
+    applyScales();
+  </script>
+</body>
+</html>
